@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/itrambovetskyi/pipeline-test#readme",
   "dependencies": {
-    "debug": "^3.1.0"
+    "debug": "^3.1.0",
+    "jsonwebtoken": "^8.1.0",
+    "mqtt": "^2.14.0"
   }
 }
