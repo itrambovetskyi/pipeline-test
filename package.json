@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "forever start app.js",
-    "stop": "forever stopall",
+    "stop": "forever stop app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

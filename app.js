@@ -1,0 +1,1 @@
+setInterval(() =>console.log('10 sec'), 10000);
