@@ -16,8 +16,10 @@ const mqttStateTopic = `/devices/${DEVICE_ID}/${MESSAGE_STATE_TYPE}`;
 const eventNotifier = getNotifier(20000, mqttEventTopic, eventDataGetter);
 const stateNotifier = getNotifier(20000, mqttStateTopic, stateDataGetter);
 
+let client = null;
+
 function connect () {
-    const client = mqtt.connect({
+    client = mqtt.connect({
         host: `mqtt.googleapis.com`,
         port: `8883`,
         clientId: mqttClientId,
@@ -57,7 +59,6 @@ setInterval(() => {
     connection.close();
     connect();
 }, 1000 * 60 * 20);
-
 
 function getNotifier (interval, topic, dataGetter) {
     let intervalId = null;
