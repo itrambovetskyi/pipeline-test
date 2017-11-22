@@ -16,35 +16,47 @@ const mqttStateTopic = `/devices/${DEVICE_ID}/${MESSAGE_STATE_TYPE}`;
 const eventNotifier = getNotifier(20000, mqttEventTopic, eventDataGetter);
 const stateNotifier = getNotifier(20000, mqttStateTopic, stateDataGetter);
 
-const client = mqtt.connect({
-    host: `mqtt.googleapis.com`,
-    port: `8883`,
-    clientId: mqttClientId,
-    username: `unused`,
-    password: Utils.createJwt(PROJECT_ID, `./keys/rsa_private.pem`),
-    protocol: `mqtts`
-});
+function connect () {
+    const client = mqtt.connect({
+        host: `mqtt.googleapis.com`,
+        port: `8883`,
+        clientId: mqttClientId,
+        username: `unused`,
+        password: Utils.createJwt(PROJECT_ID, `./keys/rsa_private.pem`),
+        protocol: `mqtts`
+    });
 
 
-client.on(`connect`, () => {
-    debug(`connected`);
+    client.on(`connect`, () => {
+        debug(`connected`);
 
-    eventNotifier.start();
-    stateNotifier.start();
-});
+        eventNotifier.start();
+        stateNotifier.start();
+    });
 
-client.on(`close`, () => {
-    debug(`close`);
+    client.on(`close`, () => {
+        debug(`close`);
 
-    eventNotifier.stop();
-    stateNotifier.stop();
+        eventNotifier.stop();
+        stateNotifier.stop();
 
-    client.reconnect();
-});
+        client.reconnect();
+    });
 
-client.on(`error`, (err) => {
-    debug(`error`, err);
-});
+    client.on(`error`, (err) => {
+        debug(`error`, err);
+    });
+
+    return {
+        close: () => client.end()
+    }
+}
+
+let connection = connect();
+setInterval(() => {
+    connection.close();
+    connect();
+}, 1000 * 60 * 20);
 
 
 function getNotifier (interval, topic, dataGetter) {
