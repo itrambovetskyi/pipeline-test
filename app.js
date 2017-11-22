@@ -38,6 +38,8 @@ client.on(`close`, () => {
 
     eventNotifier.stop();
     stateNotifier.stop();
+
+    client.reconnect();
 });
 
 client.on(`error`, (err) => {
